@@ -142,3 +142,32 @@ iso8601_timestamp() ->
     {{Year,Month,Date},{Hour,Minute,Second}} = calendar:now_to_datetime(Now),
     Format = "~4.10.0B-~2.10.0B-~2.10.0BT~2.10.0B:~2.10.0B:~2.10.0B.~6.10.0BZ",
     io_lib:format(Format, [Year, Month, Date, Hour, Minute, Second, Micro]).
+
+num_to_month(N) ->
+    case N of 
+        1 -> "Jan";
+        2 -> "Feb";
+        3 -> "Mar";
+        4 -> "Apr";
+        5 -> "May";
+        6 -> "Jun";
+        7 -> "Jul";
+        8 -> "Aug";
+        9 -> "Sep";
+        10 -> "Oct";
+        11 -> "Nov";
+        12 -> "Dec"
+    end.                          
+
+syslog_ng_compat_timestamp() ->
+    {{_Year,Month,Day},{Hour,Minute,Second}} = calendar:now_to_datetime(Now),
+    Format = "~3s ~2.10.0B ~2.10.0B:~2.10.0B:~2.10.0B",
+    io_lib:format(Format, [num_to_month(Month), Day, Hour, Minute, Second]).
+
+syslog_compatibility(Config) ->
+    case lists:keyfind(syslog_compatibility, 1, Config) of
+        {syslog_compatibility, true} ->
+            true;
+        false ->
+            false
+    end.

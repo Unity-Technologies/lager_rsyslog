@@ -42,7 +42,8 @@
     mask,
     ident,
     facility,
-    formatter
+    formatter,
+    syslog_compatibility
 }).
 
 -include("lager_rsyslog.hrl").
@@ -64,7 +65,8 @@ init(Config) when is_list(Config) ->
         mask = lager_rsyslog_util:mask(Config),
         ident = lager_rsyslog_util:identity(Config),
         facility = lager_rsyslog_util:facility(Config),
-        formatter = lager_rsyslog_util:formatter(Config)
+        formatter = lager_rsyslog_util:formatter(Config),
+        syslog_compatibility = lager_rsyslog_util:syslog_compatibility(Config)
     }}.
 
 
@@ -108,11 +110,20 @@ code_change(_OldVsn, St, _Extra) ->
     {ok, St}.
 
 
-send_log(St, Level, Msg) ->
+send_log(#{syslog_compatibility = false} = St, Level, Msg) ->
     Pre = io_lib:format("<~B>~B ~s ~s ~s ", [
         St#st.facility bor Level,
         ?SYSLOG_VERSION,
         lager_rsyslog_util:iso8601_timestamp(),
+        St#st.hostname,
+        St#st.ident
+    ]),
+    gen_udp:send(St#st.socket, St#st.dest_addr, St#st.dest_port, [Pre, Msg]).
+
+send_log(#{syslog_compatibility = true} = St, Level, Msg, true) ->
+    Pre = io_lib:format("<~B>~s ~s ~s ", [
+        St#st.facility bor Level,
+        lager_rsyslog_util:syslog_ng_compat_timestamp(),
         St#st.hostname,
         St#st.ident
     ]),
