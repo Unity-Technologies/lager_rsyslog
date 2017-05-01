@@ -23,7 +23,8 @@
     level/1,
     formatter/1,
     syslog_compatibility/1,
-    iso8601_timestamp/0
+    iso8601_timestamp/0,
+    syslog_ng_compat_timestamp/0
 ]).
 
 
