@@ -170,6 +170,6 @@ syslog_compatibility(Config) ->
     case lists:keyfind(syslog_compatibility, 1, Config) of
         {syslog_compatibility, true} ->
             true;
-        false ->
+        _ ->
             false
     end.
