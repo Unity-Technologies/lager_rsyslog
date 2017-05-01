@@ -22,7 +22,7 @@
     mask/1,
     level/1,
     formatter/1,
-    syslog_compatibility/0,
+    syslog_compatibility/1,
     iso8601_timestamp/0
 ]).
 
