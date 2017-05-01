@@ -160,7 +160,7 @@ num_to_month(N) ->
     end.                          
 
 syslog_ng_compat_timestamp() ->
-    {{_Year,Month,Day},{Hour,Minute,Second}} = calendar:now_to_datetime(Now),
+    {{_Year,Month,Day},{Hour,Minute,Second}} = calendar:now_to_datetime(os:timestamp()),
     Format = "~3s ~2.10.0B ~2.10.0B:~2.10.0B:~2.10.0B",
     io_lib:format(Format, [num_to_month(Month), Day, Hour, Minute, Second]).
 

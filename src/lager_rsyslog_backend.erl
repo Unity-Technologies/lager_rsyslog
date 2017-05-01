@@ -121,7 +121,7 @@ code_change(_OldVsn, St, _Extra) ->
 %    gen_udp:send(St#st.socket, St#st.dest_addr, St#st.dest_port, [Pre, Msg]).
 
 %send_log(#st{syslog_compatibility = true} = St, Level, Msg, true) ->
-send_log(St, Level, Msg, true) ->
+send_log(St, Level, Msg) ->
     Pre = io_lib:format("<~B>~s ~s ~s ", [
         St#st.facility bor Level,
         lager_rsyslog_util:syslog_ng_compat_timestamp(),
