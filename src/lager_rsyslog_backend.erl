@@ -110,18 +110,18 @@ code_change(_OldVsn, St, _Extra) ->
     {ok, St}.
 
 
-%send_log(#st{syslog_compatibility = false} = St, Level, Msg) ->
-%    Pre = io_lib:format("<~B>~B ~s ~s ~s ", [
-%        St#st.facility bor Level,
-%        ?SYSLOG_VERSION,
-%        lager_rsyslog_util:iso8601_timestamp(),
-%        St#st.hostname,
-%        St#st.ident
-%    ]),
-%    gen_udp:send(St#st.socket, St#st.dest_addr, St#st.dest_port, [Pre, Msg]).
+send_log(#st{syslog_compatibility = false} = St, Level, Msg) ->
+    Pre = io_lib:format("<~B>~B ~s ~s ~s ", [
+        St#st.facility bor Level,
+        ?SYSLOG_VERSION,
+        lager_rsyslog_util:iso8601_timestamp(),
+        St#st.hostname,
+        St#st.ident
+    ]),
+    gen_udp:send(St#st.socket, St#st.dest_addr, St#st.dest_port, [Pre, Msg]);
 
-%send_log(#st{syslog_compatibility = true} = St, Level, Msg, true) ->
-send_log(St, Level, Msg) ->
+send_log(#st{syslog_compatibility = true} = St, Level, Msg) ->
+%send_log(St, Level, Msg) ->
     Pre = io_lib:format("<~B>~s ~s ~s ", [
         St#st.facility bor Level,
         lager_rsyslog_util:syslog_ng_compat_timestamp(),
