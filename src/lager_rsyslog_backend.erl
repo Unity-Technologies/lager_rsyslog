@@ -77,9 +77,18 @@ terminate(_Reason, _St) ->
 handle_call(get_loglevel, St) ->
     {ok, St#st.mask, St};
 
-handle_call({set_loglevel, Level}, St) ->
+handle_call({set_loglevel, Level}, St) when is_list(Level) ->
     Mask = lager_rsyslog_util:mask(Level),
     {ok, ok, St#st{mask = Mask}};
+
+handle_call({set_loglevel, Level}, St) ->
+    try lager_util:config_to_mask(Level) of
+        Levels ->
+            {ok, ok, St#st{mask = Levels}}
+    catch
+        _:_ ->
+            {ok, {error, bad_log_level}, St}
+    end;
 
 handle_call(_Request, St) ->
     {ok, ignored, St}.
